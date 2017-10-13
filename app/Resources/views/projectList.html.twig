@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add a project</title>
+</head>
+<body>
+{% for projects in project %}
+
+<h1>Project : {{ projects.domain }}</h1>
+    <a href="{{ path('data', {'id': projects.id }) }}">Update</a>
+
+{% endfor %}
+<table>
+    <tr>
+        <th>Keyword</th>
+        <th>Rank</th>
+        <th>Change</th>
+        <th>Date</th>
+        <th>URL</th>
+        <th>Evolution</th>
+    </tr>
+{% for keywords in keyword %}
+{% for domainDatas in domainData %}
+
+    {% if keywords.id == domainDatas.keywordId and previousDate is defined and domainDatas.day|date('d.m.y') == previousDate %}
+        {% set previousRank = domainDatas.rank %}
+
+    {% endif %}
+
+    {% if keywords.id == domainDatas.keywordId and actualDate == domainDatas.day|date('d.m.y')  %}
+        <tr>
+        <td>{{ keywords.keyword }} :</td>
+        <td>{{ domainDatas.rank }}</td>
+            {% if previousRank is defined %}
+            <td>{{ domainDatas.rank - previousRank }}</td>
+            {% else %}
+                <td>0</td>
+            {% endif %}
+        <td>{{ domainDatas.day|date('d.m.Y') }}</td>
+            <td>{{ domainDatas.urlSerp }}</td>
+            <td><a href="{{ path('chart', {'id': keywords.id }) }}">Evolution</a></td>
+
+
+        </tr>
+    {% endif %}
+
+
+
+{% endfor %}
+{% endfor %}
+
+</table>
+
+     <br>
+
+
+
+Add keyword(s)
+{{ form_start(form) }}
+{{ form_widget(form) }}
+<button type="submit">Add project</button>
+{{ form_end(form) }}
+</body>
+</html>
